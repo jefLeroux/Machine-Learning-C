@@ -166,7 +166,7 @@ int main() {
 
 With these thousand iterations I got the output of the cost function down to the following value.
 
-`Cost: 0.000001
+`Cost: 0.000001`
 
 But it seems like this is the limit even when doubling the amount of iterations in the loop the value will not go any lower. After adding a print statement at the end of the loop to see what the current value of our model is I get this.
 
