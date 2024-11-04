@@ -444,4 +444,4 @@ float train[][3] = {
 1 | 1 = 0.499693
 ```
 
-But this doesn't work. XOR is "non-linearly separable" which is to say it's impossible to draw a single straight line that separate the the the input combination that result in a zero or a one output. Single neuron network can only model **linearly separable functions** in the [next document](XOR) we will take a look at how you can model XOR.
+But this doesn't work. XOR is "non-linearly separable" which is to say it's impossible to draw a single straight line that separate the the the input combination that result in a zero or a one output. Single neuron network can only model **linearly separable functions** in the [next document](XOR.md) we will take a look at how you can model XOR.
