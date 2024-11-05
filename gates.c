@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 #include <math.h>
 
@@ -9,8 +10,10 @@
     It will model a simple OR/AND gate
 */
 
+typedef float data[3];
+
 // OR GATE
-float train[][3] = {
+data or_train[] = {
     {0, 0, 0},
     {1, 0, 1},
     {0, 1, 1},
@@ -18,33 +21,23 @@ float train[][3] = {
 };
 
 // AND GATE
-// float train[][3] = {
-//     {0, 0, 0},
-//     {1, 0, 0},
-//     {0, 1, 0},
-//     {1, 1, 1},
-// };
+data and_train[] = {
+    {0, 0, 0},
+    {1, 0, 0},
+    {0, 1, 0},
+    {1, 1, 1},
+};
 
 // NAND GATE
-// float train[][3] = {
-//     {0, 0, 1},
-//     {1, 0, 1},
-//     {0, 1, 1},
-//     {1, 1, 0},
-// };
-
-// XOR GATE
-// float train[][3] = {
-//     {0, 0, 0},
-//     {1, 0, 1},
-//     {0, 1, 1},
-//     {1, 1, 0},
-// };
-
-#define train_count (sizeof(train) / sizeof(train[0])) // Get the number of elements in the array
+data nand_train[] = {
+    {0, 0, 1},
+    {1, 0, 1},
+    {0, 1, 1},
+    {1, 1, 0},
+};
 
 float rand_float(void) {
-    return (float)rand() / (float)RAND_MAX; // Now this gives a value between 0.0 and 1.0
+    return (float)rand() / (float)RAND_MAX; // this gives a value between 0.0 and 1.0
 }
 
 // Activation function (Sigmoid)
@@ -52,6 +45,9 @@ float sigmoidf(float x) {
     return 1.0f / (1.0f + expf(-x));
 }
 
+// allows us to switch our dataset
+data *train = or_train;
+size_t train_count = 4;  
 
 float cost(float w1, float w2, float b) {
     // Train the model
@@ -70,6 +66,8 @@ float cost(float w1, float w2, float b) {
 int main(void) {
     srand(13);
     
+    bool tracing = false;
+
     float w1 = rand_float();
     float w2 = rand_float();
     float b = rand_float();
@@ -89,9 +87,8 @@ int main(void) {
         w2 -= rate * dw2; 
         b -= rate * db;
 
-        // printf("w1: %f, w2: %f, b: %f, c: %f\n", w1, w2, b, cost(w1, w2, b));
+        tracing && printf("w1: %f, w2: %f, b: %f, c: %f\n", w1, w2, b, cost(w1, w2, b));
     }
-    // printf("w1: %f, w2: %f, b: %f, c: %f\n", w1, w2, b, cost(w1, w2, b));
 
     // Check how well the model preforms
     for (size_t i = 0; i < 2; i++) {
