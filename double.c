@@ -23,14 +23,25 @@ float rand_float(void) {
 }
 
 
-float cost(float w, float b) {
+float cost(float w) {
     // Train the model
     float result = 0.0f;
     for (size_t i = 0; i < train_count; i++) {
         float x = train[i][0];
-        float y = x * w + b;
+        float y = x * w;
         float error = y - train[i][1]; // calculate how wrong our model is
         result += error * error;  // square the error to make mistakes more meaningful
+    }
+    result /= train_count;
+    return result;
+}
+
+float dcost(float w) {
+    float result = 0.0f;
+    for (int i = 0; i < train_count; i++) {
+        float x = train[i][0];
+        float y = train[i][1];
+        result += 2*(x*w - y)*x;
     }
     result /= train_count;
     return result;
@@ -43,27 +54,23 @@ float cost(float w, float b) {
 */
 
 int main(void) {
-    srand(time(0)); 
+    srand(13); 
 
     float w = rand_float() * 10.0f; // Random value between 0 and 10
-    float b = rand_float() * 5.0f; // Random value between 0 and 5
 
-    float eps = 1e-3; // size of the step
+    // float eps = 1e-3; // size of the step
     float rate = 1e-3; // learning rate
 
-    for(int i = 0; i < 10000; i++) {
-        float c = cost(w, b);
-
-        float dw = (cost(w + eps, b) - c) / eps; 
-        float db = (cost(w, b + eps) - c) / eps; 
+    for(int i = 0; i < 2 * 1000; i++) {
+        // float c = cost(w);
+        float dw = dcost(w); 
 
         // update the model
         w -= rate * dw; 
-        b -= rate * db;
 
-        printf("Cost: %f, w = %f, b = %f\n", cost(w, b), w, b);
+        printf("Cost: %f, w = %f\n", cost(w), w);
     }
     printf("-----------------------------\n");
-    printf("w: %f, b: %f\n", w, b);
+    printf("w: %f\n", w);
     return 0;
 }

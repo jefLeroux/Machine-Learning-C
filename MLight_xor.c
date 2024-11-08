@@ -41,7 +41,7 @@ int main(void) {
     srand(time(0));
 
     size_t stride = 3;
-    float  *td = td_xor;
+    float  *td = td_or;
     size_t n = 4;
     Matrix tin = {
         .rows = n,
@@ -57,8 +57,7 @@ int main(void) {
         .es = td + 2,
     };
 
-    float eps = 1e-1;
-    float rate = 1e-1;
+    float rate = 1;
     bool tracing = true;
     bool network = false;
 
@@ -68,11 +67,13 @@ int main(void) {
     NN g = nn_alloc(arch, ARRAY_LEN(arch));
     NEURALNETWORK_RANDOMIZE(nn);
 
-    for (size_t i = 0; i < 50 * 1000; i++) {
-        nn_finite_diff(nn, g, eps, tin, tout);
+    for (size_t i = 0; i < 5 *1000; i++) {
+        nn_backprop(nn, g, tin, tout);
         nn_learn(nn, g, rate);
         tracing && printf("%zu: cost = %f\n", i, nn_cost(nn, tin, tout));
     }
+
+    NEURALNETWORK_PRINT(g);
 
     // verify
     for (size_t i = 0; i < 2; i++) {

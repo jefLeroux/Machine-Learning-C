@@ -63,25 +63,53 @@ float cost(float w1, float w2, float b) {
     return result;
 }
 
+float gcost(float w1, float w2, float b, float *dw1, float *dw2, float *db) {
+    *dw1 = 0.0f;
+    *dw2 = 0.0f;
+    *db = 0.0f;
+
+    float n = train_count;
+    for(size_t i = 0; i < n; i++) {
+        float xi = train[i][0];
+        float yi = train[i][1];
+        float zi = train[i][2];
+        float ai = sigmoidf(xi*w1 + yi*w2 + b);
+        float di = 2*(ai - zi)*ai*(1 - ai);
+        *dw1 += di*xi;
+        *dw2 += di*yi;
+        *db += di;
+    }
+
+    *dw1 /= n;
+    *dw2 /= n;
+    *db /= n;
+}
+
 int main(void) {
     srand(13);
     
-    bool tracing = false;
+    bool tracing = true;
 
     float w1 = rand_float();
     float w2 = rand_float();
     float b = rand_float();
 
-    float eps = 1e-3; // size of the step
     float rate = 1e-1; // learning rate
 
-    for(size_t i = 0; i < 1000 * 1000; i++) {
+    for(size_t i = 0; i < 1 * 1000; i++) {
+
+        float dw1, dw2, db;
+
+#if 0
+        float eps = 1e-3; // size of the step
         float c = cost(w1, w2, b);
 
-        float dw1 = (cost(w1 + eps, w2, b) - c) / eps; 
-        float dw2 = (cost(w1, w2 + eps, b) - c) / eps; 
-        float db = (cost(w1, w2, b + eps) - c) / eps;
-
+        dw1 = (cost(w1 + eps, w2, b) - c) / eps; 
+        dw2 = (cost(w1, w2 + eps, b) - c) / eps; 
+        db = (cost(w1, w2, b + eps) - c) / eps;
+#else
+    gcost(w1, w2, b, &dw1, &dw2, &db);
+#endif
         // update the model
         w1 -= rate * dw1; 
         w2 -= rate * dw2; 
